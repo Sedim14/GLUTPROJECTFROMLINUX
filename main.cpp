@@ -11,6 +11,17 @@
 #include <string>
 #include <sstream>
 
+std::vector<Mesh*>models;
+
+//Put obj files paths in here
+std::vector<const char*>objs={
+    "zorua.obj",
+    "ico.obj",
+    "cone.obj",
+    "torus.obj"
+};
+
+
 GLFWwindow* window;
 
 //Frame counter
@@ -42,14 +53,11 @@ std::vector<Vector3D> colorList = {
 
 };
 
-
-
-Mesh model;
-
 //Window Height
 float width = 800.0f;
 float height = 600.0f;
 float steps = 0.2f;
+
 
 
 
@@ -124,6 +132,20 @@ float getCurrentTimeMS()
     return static_cast<float>(milliseconds);;
 }
 
+
+void loadModels() {
+
+    for(int i=0;i<objs.size();i++)
+    {
+        Mesh* newModel = new Mesh();
+        newModel->loadVertices(objs[i]);
+        newModel->createFaces(objs[i]);
+        models.push_back(newModel);
+    }
+
+}
+
+
 void display(void)
 {
 
@@ -135,8 +157,10 @@ void display(void)
 	glLoadIdentity();
 	gluLookAt(eye.x, eye.y, eye.z, center.x, center.y, center.z, up.x, up.y, up.z);
 	
-	model.drawMesh(colorList);
-    
+	for(int i = 0;i<models.size();i++)
+	{
+		models[i]->drawMesh(colorList);
+	}
 	
 }
 
@@ -251,8 +275,7 @@ int main(int argc, char** argv)
 	glfwSetKeyCallback(window, key_callback);
 	
 	
-	model.loadVertices("cube.obj");
-	model.createFaces("cube.obj");
+	loadModels();
 
 	
 	
